@@ -7,7 +7,7 @@ import {World} from "../generator/world.js";
 function CellTestState() {
 	return State({
 		initialize() {
-			this.maze = World().cells;
+			this.maze = World('bob').cells;
 			this.cell = new Cell(this.maze[0][0]);
 			this.registerKey("s", {
 				"down": () => {

@@ -2,6 +2,7 @@
 import { generateMaze } from "./maze.js";
 import { convertToRegionGraph, Region } from "./graph.js";
 import { randomInt, selectWeighted, drawRandom } from "../../util/random.js";
+import { idGen } from "./id.js";
 
 /**
  * 
@@ -52,10 +53,9 @@ function World(playerCode){
     
     // traverse cells and lock doors
     let worldGraph = convertToRegionGraph(worldCells, startPos, bossCell, playerCode);
-    let nextKeyId = 1;
     let items = {}
     
-    const DOOR_LOCK_CHANCE = 0.;
+    const DOOR_LOCK_CHANCE = 0.2;
 
     /**
      * 
@@ -66,23 +66,23 @@ function World(playerCode){
         if(ancestorCell){
             let shouldLockDoor = Math.random() < DOOR_LOCK_CHANCE;
             if(shouldLockDoor){
+                let itemId = idGen.next;
                if(ancestorCell.col + 1 == region.cell?.col){
-                    worldCells[ancestorCell.row][ancestorCell.col].doors['right'] = nextKeyId;
+                    worldCells[ancestorCell.row][ancestorCell.col].doors['right'] = itemId;
                }
                if(ancestorCell.col - 1 == region.cell?.col){
-                    worldCells[ancestorCell.row][ancestorCell.col].doors['left'] = nextKeyId;
+                    worldCells[ancestorCell.row][ancestorCell.col].doors['left'] = itemId;
                 }
 
                 if(ancestorCell.row + 1 == region.cell?.row){
-                    worldCells[ancestorCell.row][ancestorCell.col].doors['down'] = nextKeyId;
+                    worldCells[ancestorCell.row][ancestorCell.col].doors['down'] = itemId;
                }
                if(ancestorCell.row - 1 == region.cell?.row){
-                    worldCells[ancestorCell.row][ancestorCell.col].doors['up'] = nextKeyId;
+                    worldCells[ancestorCell.row][ancestorCell.col].doors['up'] = itemId;
                 }
-                let keyName = `${playerCode}_key_${nextKeyId}`;
-                region.addRequirement(keyName);
-                items[keyName] = false; 
-                nextKeyId ++;
+                let keyName = `${playerCode}_key_${itemId}`;
+                region.addRequirement(itemId);
+                items[itemId] = {name:keyName, collected:false, player: playerCode};
             }
         }
         for(let i = 0; i < region.children.length; i++){
@@ -91,9 +91,6 @@ function World(playerCode){
     }
 
     lockDoors(worldGraph);
-
-    
-    
 
     return {
         cells: worldCells,
@@ -255,14 +252,5 @@ let cellTypeDefs = [
         }
     }
 ]
-
-/**
- * 
- * @param {number} count 
- * @param {WorldCell[][]} world 
- */
-function lockDoors(count, world){
-    
-}
 
 export { World };

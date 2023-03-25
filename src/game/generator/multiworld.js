@@ -3,10 +3,20 @@ import { drawRandom } from "../../util/random.js";
 import { convertToRegionGraph, Region } from "./graph.js";
 import { World } from "./world.js";
 
-
+/**
+ * @typedef Item
+ * @property {string} name
+ * @property {boolean} collected 
+ * @property {string} world 
+ */
+/** @typedef MultiWorld
+ * @property {Object.<string, World>} worlds
+ * @property {Object.<string, Item>} items
+ */
 /**
  * 
  * @param {string[]} players A list of player codes
+ * @returns {MultiWorld}
  */
 let GenerateMultiWorld = (players)=>{
     let playerCount = players.length;
@@ -14,17 +24,18 @@ let GenerateMultiWorld = (players)=>{
         throw 'At least one player must be present for generation';
     }
     let multiworldRoot = new Region('multiworld_root', [], null, null);
+    /** @type {Object.<string, World>} */ 
     let worlds = {};
+    /** @type {Object.<string, Item>}  */
     let items = {};
-    let itemMap = {};
-    let itemId = 1;
     for(let i = 0; i < playerCount; i++){
         let world = World(players[i]);
+        // @ts-ignore
         worlds[players[i]] = world;
         world.root.setParent(multiworldRoot);
         let keys = Object.getOwnPropertyNames(world.items);
         for(let i = 0; i < keys.length; i++){
-            items[keys[i]] = true;
+            items[keys[i]] = world.items[keys[i]];
         }
     }
     console.log(worlds);
@@ -35,8 +46,6 @@ let GenerateMultiWorld = (players)=>{
     getAvailable(state, multiworldRoot, availableLocations, requirements);
 
     while(Object.getOwnPropertyNames(requirements).length > 0){
-        
-        let chosenItem = drawRandom(requirements);
         let chosenLocation = drawRandom(availableLocations);
         let locs = {'up':true, 'left':true, 'right':true, 'down':true}
         while(true){
@@ -45,20 +54,26 @@ let GenerateMultiWorld = (players)=>{
             }
             let dir = drawRandom(locs)[1];
             if(chosenLocation[0][dir] == -1){
-                itemMap[itemId] = {item:chosenItem[1],location:chosenLocation[0]};
-
-                chosenLocation[0][dir] = itemId;
+                let chosenItem = drawRandom(requirements);
+                chosenLocation[0][dir] = Number(chosenItem[1]);
                 state[chosenItem[1]] = true;
-                itemId++;
                 break;
             }
         }
+    }
         
         getAvailable(state, multiworldRoot, availableLocations, requirements);
+
+    for(let i = 0; i < playerCount; i++){
+        // @ts-ignore
+        worlds[players[i]].root = null;
     }
-    console.log(itemMap);
+
     
-    
+    return {
+        worlds: worlds,
+        items: items
+    }
 }
 
 /**

@@ -39,7 +39,7 @@ let Room = function(data){
      */
     this.subcribeToGameUpdates = (callback)=>{
         let code = generateCode(10);
-        playerListeners[code] = callback;
+        gameListeners[code] = callback;
         return code;
     }
 
@@ -57,6 +57,16 @@ let Room = function(data){
     this.unsubscribeListener = (code) => {
         delete playerListeners[code];
         delete gameListeners[code];
+    }
+    /**
+     * 
+     * @param {import("../game/generator/multiworld.js").MultiWorld} multiworld 
+     */
+    this.setGame = function(multiworld){
+        game.multiworld = multiworld;
+        game.generated = true;
+        // @ts-ignore
+        firebase.database().ref("/rooms/" + this.roomCode + '/game/').set(game);
     }
 }
 
@@ -84,7 +94,7 @@ let createRoom = (playerName) => {
     let player = new Player(playerName, generateCode(6));
     let roomData = {
         game:{
-            generated: false
+            generated: false,
         },
         players:{},
         code: roomCode

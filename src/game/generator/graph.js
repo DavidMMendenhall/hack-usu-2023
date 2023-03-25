@@ -2,7 +2,7 @@
 /**
  * 
  * @param {string} name Like Player 034322's cell 2,3
- * @param {string[]} requirements Items needed like ['034322_key1']
+ * @param {number[]} requirements Item id's needed
  * @param {Region | null} parent Previous room
  * @param {{row:number, col:number} | null} cell location
  */
@@ -12,7 +12,7 @@ function Region(name, requirements, parent, cell) {
     /** @type {Region[]}*/
     this.children = [];
     /**
-     * @param {string} requirement 
+     * @param {number} requirement 
      */
     this.addRequirement = (requirement) => {
         requirements.push(requirement);
