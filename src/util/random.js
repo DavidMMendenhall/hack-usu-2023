@@ -21,4 +21,36 @@ let randomInt = (a, b) => {
     return Math.floor((b - a) * Math.random() + a);
 } 
 
-export {generateCode, randomInt}
+/**
+ * 
+ * @param {{weight:number}[]} options 
+ */
+let selectWeighted = (options) => {
+    let totalWeight = 0;
+    for(let i = 0; i < options.length; i++){
+        totalWeight += options[i].weight;
+    }
+    let selectedWeight = Math.random() * totalWeight;
+    for(let i = 0; i < options.length; i++){
+        selectedWeight -= options[i].weight;
+        if(selectedWeight <= 0){
+            return i;
+        }
+    }
+    return -1;
+}
+
+
+/**
+ * selects a random item, removes it from the list and returns it.
+ * @param {any[]} items 
+ */
+let drawRandom = (items) => {
+    let randomIndex = randomInt(0, items.length);
+    if(items.length == 0){
+        return undefined;
+    }
+    return items.splice(randomIndex, 1)[0];
+}
+
+export {generateCode, randomInt, selectWeighted, drawRandom}

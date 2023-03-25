@@ -1,5 +1,12 @@
 // @ts-check
 import { randomInt } from "../../util/random.js";
+
+const CELL_CONNECTION_TYPE = {
+    border: -1,
+    open : 0,
+    wall : 1,
+}
+
 /**
  * 
  * @param {number} row 
@@ -37,10 +44,31 @@ function MazeCell(row, col){
         }
     }
 }
+/** @type {MazeCell[]}*/
+MazeCell.cells = [];
+
 /**
  * 
+ * @param {MazeCell[][]} cells 
  */
-MazeCell.cells = [];
+let serializeCells = (cells) => {
+    let seralizedCells = [];
+    for(let row = 0; row < cells.length; row++){
+        let cRow = [];
+        for(let col = 0; col < cells[row].length; col++){
+            let cell = cells[row][col];
+            cRow.push({
+                up: cell.up,
+                down: cell.down,
+                right: cell.right,
+                left: cell.left
+            });
+        }
+        seralizedCells.push(cRow);
+    }
+    return seralizedCells;
+}
+
 /**
  * 
  * @param {number} size 
@@ -136,7 +164,7 @@ let generateMaze = function(size){
         }
     }
 
-    return cells;
+    return serializeCells(cells);
 }
 
 export {generateMaze}
