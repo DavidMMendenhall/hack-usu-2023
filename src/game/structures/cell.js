@@ -98,7 +98,7 @@ class Cell {
 	 * @param {Texture} tx
 	 */
 	draw(tx) {
-		tx.ctx.fillStyle = "#000";
+		tx.ctx.fillStyle = "#565";
 		tx.ctx.fillRect(0, 0, tx.canvas.width, tx.canvas.height);
 		let tileWidth = Math.min(
 			0.8 * tx.canvas.width / this.tilesX,
