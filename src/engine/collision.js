@@ -30,7 +30,7 @@ class BoundingBox {
 			this._y2 = spec.cy + hh
 			this._w = spec.w
 			this._h = spec.h
-			this._cx = spec.cy
+			this._cx = spec.cx
 			this._cy = spec.cy
 		}
 
