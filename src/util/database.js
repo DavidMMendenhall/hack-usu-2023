@@ -6,7 +6,7 @@ import { generateCode } from "./random.js"
  * @param {*} data
  */
 let Room = function(data){
-    let game = data.game;
+    this.game = data.game;
     this.players = data.players;
     this.roomCode = data.code;
 
@@ -15,6 +15,8 @@ let Room = function(data){
 
     // @ts-ignore
     let firebasePlayerRef = firebase.database().ref('/rooms/'+ this.roomCode +'/players')
+    //@ts-ignore
+    let firebaseGameRef = firebase.database().ref('/rooms/'+ this.roomCode +'/game')
 
     let updatePlayers = (data)=>{
         let newPlayers = data.val();
@@ -26,11 +28,37 @@ let Room = function(data){
 
             let keys = Object.getOwnPropertyNames(playerListeners);
             for(let i = 0; i < keys.length; i++){
-                playerListeners[keys[i]]();
+                playerListeners[keys[i]](newPlayers);
             }
         }
     }
     firebasePlayerRef.on('value', updatePlayers);
+
+
+    let updateGame = (data)=>{
+        let newGameData = data.val();
+        if(newGameData){
+            this.game = newGameData;
+            let keys = Object.getOwnPropertyNames(gameListeners);
+            for(let i = 0; i < keys.length; i++){
+                gameListeners[keys[i]](newGameData);
+            }
+        }
+        
+    }
+    
+    firebaseGameRef.on('value', updateGame)
+
+    /**
+     * 
+     * @param {(game:{generated:boolean,multiworld:import("../game/generator/multiworld.js").MultiWorld})=>void} callback
+     * @returns id of listener, use to unsubscribe
+     */
+    this.subcribeToGameUpdates = (callback)=>{
+        let code = generateCode(10);
+        gameListeners[code] = callback;
+        return code;
+    }
 
     /**
      * 
@@ -43,16 +71,6 @@ let Room = function(data){
         return code;
     }
 
-    /**
-     * 
-     * @param {(game:{})=>void} callback 
-     * id of listener, use to unsubscribe
-     */
-    this.subcribeToGameUpdates = (callback)=>{
-        let code = generateCode(10);
-        gameListeners[code] = callback;
-        return code;
-    }
 
     this.unsubscribeListener = (code) => {
         delete playerListeners[code];
@@ -63,10 +81,10 @@ let Room = function(data){
      * @param {import("../game/generator/multiworld.js").MultiWorld} multiworld 
      */
     this.setGame = function(multiworld){
-        game.multiworld = multiworld;
-        game.generated = true;
+        this.game.multiworld = multiworld;
+        this.game.generated = true;
         // @ts-ignore
-        firebase.database().ref("/rooms/" + this.roomCode + '/game/').set(game);
+        firebase.database().ref("/rooms/" + this.roomCode + '/game/').set(this.game);
     }
 }
 
