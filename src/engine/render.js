@@ -1,9 +1,25 @@
 class Texture {
+  static texturePool = document.getElementById("textures");
   constructor(id) {
 	/** @type HTMLCanvasElement */
 	this.canvas = document.getElementById(id);
 	/** @type CanvasRenderingContext2D */
 	this.ctx = this.canvas.getContext("2d");
+  }
+
+  static create(id, w, h) {
+	if (document.getElementById(id)) {
+	  return new Texture(id);
+	}
+
+	let tex = document.createElement("canvas");
+	tex.id = id;
+	tex.width = w;
+	tex.height = h;
+
+	Texture.texturePool.append(tex);
+
+	return new Texture(id);
   }
 
   doRotated(x, y, angle, func) {

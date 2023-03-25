@@ -5,6 +5,7 @@ import {World} from "../generator/world.js";
 import {BoundingBox} from "../../engine/collision.js";
 import {Texture} from "../../engine/render.js";
 import {DoorTile} from "../structures/tile.js";
+import {ScrollingState} from "./scrolling.js";
 
 const MOVEMENT_SPEED = 3;
 
@@ -18,6 +19,8 @@ function GameState() {
 			this.cx = 0;
 			this.cy = 0;
 			this.updateCell();
+
+			this.scrolling = false;
 
 			this.registerKeys(["w", "ArrowUp"], {
 				"held": () => {
@@ -104,7 +107,10 @@ function GameState() {
 							throw "RIGGED";
 					}
 
-					this.updateCell();
+					console.log(nextBoundingBox);
+
+					this.scrolling = true;
+					this.engine.pushState(ScrollingState(dir));
 					return;
 				}
 			}
