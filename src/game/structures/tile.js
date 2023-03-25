@@ -58,4 +58,20 @@ class DoorTile extends Tile {
   }
 }
 
-export { Tile, WallTile, BorderTile, DoorTile };
+class ChestTile extends Tile {
+  collides = false;
+  /**
+   * 
+   * @param {number} content 
+   */
+  constructor(content) {
+		super();
+		this.content = content;
+  }
+  draw(tx, x, y, w, h) {
+    tx.ctx.fillStyle = this.content == 0 ? "#00FF00" : "#FF0000";
+    tx.ctx.fillRect(x, y, w, h);
+  }
+}
+
+export { Tile, WallTile, BorderTile, DoorTile, ChestTile};

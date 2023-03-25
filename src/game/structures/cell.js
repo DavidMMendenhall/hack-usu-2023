@@ -1,7 +1,7 @@
 // @ts-check
 
 import {Texture} from "../../engine/render.js";
-import {Tile, WallTile, BorderTile, DoorTile} from "./tile.js";
+import {Tile, WallTile, BorderTile, DoorTile, ChestTile} from "./tile.js";
 
 class Cell {
 	/**
@@ -11,6 +11,20 @@ class Cell {
 	constructor(wc) {
 		this.tilesX = 11;
 		this.tilesY = 9;
+		const CHEST_POS = {
+			'up': {
+				x: 4, y: 3
+			},
+			'down': {
+				x: 6, y: 8
+			},
+			'right': {
+				x: 8, y: 6
+			},
+			'left': {
+				x: 3, y: 6
+			}
+		}
 		/** @type {Tile[][]} */
 		this.tiles = [];
 		for (let y = 0; y < this.tilesY; y++) {
@@ -25,6 +39,13 @@ class Cell {
 					wc.walls.down == -1  && y == this.tilesY - 1
 				);
 
+				this.chest = -1;
+				Object.getOwnPropertyNames(CHEST_POS).forEach((key)=>{
+					if(x == CHEST_POS[key].x && y == CHEST_POS[key].y && wc.chests[key] != -1){
+						this.chest = wc.chests[key];
+					}
+				})
+
 				this.door = true; 
 				if (wc.walls.left  == 0 && x == 0 && y == ((this.tilesY / 2) | 0)) {
 					this.direction = "w";
@@ -38,7 +59,13 @@ class Cell {
 					this.door = false;
 				}
 
-				let tile = this.door ? new DoorTile(this.direction) : this.border ? new BorderTile() : this.wall ? new WallTile() : new Tile();
+				
+
+				let tile = this.door ? new DoorTile(this.direction) : 
+							this.border ? new BorderTile() : 
+							this.wall ? new WallTile() : 
+							this.chest != -1 ? new ChestTile(this.chest) :
+							new Tile();
 				line.push(tile);
 			}
 		}
