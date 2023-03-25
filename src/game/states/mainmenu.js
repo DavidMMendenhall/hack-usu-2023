@@ -4,6 +4,7 @@ import {State} from "../../engine/state.js";
 import {HostGameState} from "./hostgame.js";
 import {JoinGameState} from "./joingame.js";
 import {OpenGameState} from "./opengame.js";
+import {CellTestState} from "./celltest.js";
 
 function MainMenuState() {
 	return State({
@@ -19,6 +20,10 @@ function MainMenuState() {
 					text: "Join Game",
 					callback: () => this.engine.pushState(JoinGameState()),
 				},
+				{
+					text: "Secret Test Option",
+					callback: () => this.engine.pushState(CellTestState()),
+				}
 			];
 			if (this.roomCode) {
 				items.unshift({

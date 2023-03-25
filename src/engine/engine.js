@@ -118,7 +118,7 @@ function Engine(spec) {
 	return {
 		__proto__: enginePrototype,
 		initialize() {
-			this.viewport = Texture(spec.viewportId);
+			this.viewport = new Texture(spec.viewportId);
 			this.pushState(spec.initialState);
 		},
 	};

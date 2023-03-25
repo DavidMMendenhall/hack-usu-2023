@@ -1,4 +1,11 @@
-const texturePrototype = {
+class Texture {
+  constructor(id) {
+	/** @type HTMLCanvasElement */
+	this.canvas = document.getElementById(id);
+	/** @type CanvasRenderingContext2D */
+	this.ctx = this.canvas.getContext("2d");
+  }
+
   doRotated(x, y, angle, func) {
     this.ctx.save();
     this.ctx.translate(x, y);
@@ -9,16 +16,6 @@ const texturePrototype = {
 
     this.ctx.restore();
   }
-};
-
-function Texture(id) {
-  let canvas = document.getElementById(id);
-  let ctx = canvas.getContext("2d");
-  return {
-    __proto__: texturePrototype,
-    canvas: canvas,
-    ctx: ctx
-  };
 }
 
 function rotationFromDirection(str) {
