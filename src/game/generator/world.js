@@ -82,7 +82,7 @@ function World(playerCode){
                 }
                 let keyName = `${playerCode}_key_${itemId}`;
                 region.addRequirement(itemId);
-                items[itemId] = {name:keyName, collected:false, player: playerCode};
+                items[itemId] = {name:keyName, collected:false, world:playerCode};
             }
         }
         for(let i = 0; i < region.children.length; i++){

@@ -86,6 +86,19 @@ let Room = function(data){
         // @ts-ignore
         firebase.database().ref("/rooms/" + this.roomCode + '/game/').set(this.game);
     }
+
+    this.collectItem = (id)=>{
+        if(this.game.multiworld){
+            /** @type {import("../game/generator/multiworld.js").MultiWorld} */
+            let mw = this.game.multiworld;
+            let item = mw.items[id];
+            item.collected = true;
+            // @ts-ignore
+            firebase.database().ref("/rooms/" + this.roomCode + '/game/multiworld/items/' + id).set(mw.items[id]);
+            // @ts-ignore
+            firebase.database().ref("/rooms/" + this.roomCode + '/game/multiworld/worlds/' + item.world + '/items/'+id).set(mw.items[id]);
+        }
+    }
 }
 
 /**
