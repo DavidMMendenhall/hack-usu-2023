@@ -1,7 +1,6 @@
 // @ts-check
 import { generateCode } from "./random.js"
 
-
 /**
  * 
  * @param {*} data
@@ -11,8 +10,9 @@ let Room = function(data){
     this.players = data.players;
     this.roomCode = data.code;
 
-    // @ts-ignore
-    let firebaseRoomRef = firebase.database().ref('/rooms/' + this.roomCode);
+    let playerListeners = {};
+    let gameListeners = {};
+
     // @ts-ignore
     let firebasePlayerRef = firebase.database().ref('/rooms/'+ this.roomCode +'/players')
 
@@ -23,9 +23,41 @@ let Room = function(data){
             for(let i = 0; i < playerCodes.length; i++){
                 this.players[playerCodes[i]] = newPlayers[playerCodes[i]];
             }
+
+            let keys = Object.getOwnPropertyNames(playerListeners);
+            for(let i = 0; i < keys.length; i++){
+                playerListeners[keys[i]]();
+            }
         }
     }
     firebasePlayerRef.on('value', updatePlayers);
+
+    /**
+     * 
+     * @param {(players:{})=>void} callback
+     * @returns id of listener, use to unsubscribe
+     */
+    this.subcribeToGameUpdates = (callback)=>{
+        let code = generateCode(10);
+        playerListeners[code] = callback;
+        return code;
+    }
+
+    /**
+     * 
+     * @param {(game:{})=>void} callback 
+     * id of listener, use to unsubscribe
+     */
+    this.subcribeToGameUpdates = (callback)=>{
+        let code = generateCode(10);
+        gameListeners[code] = callback;
+        return code;
+    }
+
+    this.unsubscribeListener = (code) => {
+        delete playerListeners[code];
+        delete gameListeners[code];
+    }
 }
 
 /**
@@ -88,9 +120,19 @@ async function joinRoom(playerName, roomCode){
 
 }
 
-// creating a game
+async function openRoom(roomCode){
+    let roomInfo;
+    // @ts-ignore
+    roomInfo = await firebase.database().ref("/rooms/" + roomCode).get();
+    if(roomInfo.val() == null){
+    
+    return null;
+    }
+    
+    let room = new Room(roomInfo);
+    return room;
 
-// joining a room
+}
 
 
 export{createRoom, joinRoom}
