@@ -1,4 +1,4 @@
-import("render");
+import "./render.js";
 
 /** @typedef { import('./types').Texture } Texture */
 

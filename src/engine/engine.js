@@ -1,16 +1,19 @@
-/** @typedef { import('./types').Engine } Engine */
+import {Keyboard} from "./input.js";
+import {Texture} from "./render.js";
+import {State} from "./state.js";
 
-/** @type Engine */
 const enginePrototype = {
 	/**
 	 * Push a state to the state stack
+	 *
+	 * @param {State} state
 	 */
 	pushState(state) {
 		let topState = null;
 		if (this.stateStack.length != 0) {
 			topState = this.stateStack[this.stateStack.length - 1];
 		}
-
+	  
 		state.parentState = topState;
 		state.engine = this;
 		state.quit = false;
@@ -100,3 +103,25 @@ const enginePrototype = {
 		}
   },
 }
+
+function Engine(spec) {
+  if (!spec.viewportId) {
+		console.error("Engine initialization requires base viewport texture.");
+		return null;
+	}
+
+  if (!spec.initialState) {
+		console.error("Engine initialization requires initial state.");
+		return null;
+	}
+
+	return {
+		__proto__: enginePrototype,
+		initialize() {
+			this.viewport = Texture(spec.viewportId);
+			this.pushState(spec.initialState);
+		},
+	};
+}
+
+export { Engine };

@@ -1,6 +1,4 @@
-import "input";
-
-/** @typedef { import('./types').State } State */
+import "./input.js";
 
 const statePrototype = {
 	registerKey(key, callbacks) {

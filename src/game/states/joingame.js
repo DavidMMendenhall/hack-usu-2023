@@ -2,17 +2,21 @@
 import "../../engine/menu.js";
 import "../../engine/render.js";
 import {State} from "../../engine/state.js";
-import {createRoom} from "../../util/database.js";
+import {joinRoom, createRoom} from "../../util/database.js";
 
-function HostGameState() {
+function JoinGameState() {
 	return State({
 		initialize() {
+			while (!this.roomCode) {
+				this.roomCode = prompt("Enter the room code:");
+			}
+
 			while (!this.name) {
 				this.name = prompt("Choose a name:");
 			}
 
-			this.room = createRoom(this.name);
-			localStorage["roomCode"] = this.room.roomCode;
+			this.room = joinRoom(this.name, this.roomCode);
+			localStorage["roomCode"] = this.roomCode;
 			console.log(this.room);
 		},
 
@@ -35,4 +39,4 @@ function HostGameState() {
 	});
 }
 
-export { HostGameState };
+export { JoinGameState };

@@ -1,6 +1,3 @@
-/** @typedef {import('./types').Keyboard} Keyboard */
-
-/** @type Keyboard */
 const keyboardPrototype = {
   update(state, delta) {
     for (const key of this.pressed) {

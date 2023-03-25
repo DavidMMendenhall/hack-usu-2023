@@ -1,24 +1,12 @@
-import "render";
-import "input";
+import "./render.js";
+import "./input.js";
 
-/** @typedef { import('./types').Texture } Texture */
-/** @typedef { import('./types').MenuButton } MenuButton */
-/** @typedef { import('./types').Menu } Menu */
-/** @typedef { import('./types').Keyboard } Keyboard */
-
-/** @type Menu */
 const menuPrototype = {
-	chooseRotation() {
-		this.selectedRotation = Math.random() * 0.3 - 0.15;
-	},
-
 	cursorUp() {
 		if (this.selectedIdx == 0) {
 			return;
 		}
 		
-		this.chooseRotation();
-
 		this.items[this.selectedIdx].selected = false;
 		this.items[--this.selectedIdx].selected = true;
 	},
@@ -28,8 +16,6 @@ const menuPrototype = {
 			return;
 		}
 
-		this.chooseRotation();
-
 		this.items[this.selectedIdx].selected = false;
 		this.items[++this.selectedIdx].selected = true;
 	},
@@ -38,11 +24,6 @@ const menuPrototype = {
 		this.items[this.selectedIdx].callback?.();
 	},
 
-	/**
-	 * Install keybindings to move within menu
-	 *
-	 * @param {Keyboard} state
-	 */
 	installKeybinds(state) {
 		state.registerKey("w", {
 			"down": () => this.cursorUp(),
@@ -113,7 +94,6 @@ function Menu(spec) {
 	spec.__proto__ = menuPrototype;
 	spec.verticalSeparation = 75;
 	spec.selectedIdx = 0;
-	spec.chooseRotation();
 
 	spec.buttonHeightAbove = 25;
 	spec.buttonHeightBelow = 9;
