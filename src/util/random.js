@@ -43,14 +43,17 @@ let selectWeighted = (options) => {
 
 /**
  * selects a random item, removes it from the list and returns it.
- * @param {any[]} items 
+ * @param {{}} items 
  */
 let drawRandom = (items) => {
-    let randomIndex = randomInt(0, items.length);
-    if(items.length == 0){
-        return undefined;
+    let keys = Object.getOwnPropertyNames(items);
+    let randomIndex = randomInt(0, keys.length);
+    if(keys.length == 0){
+        return [undefined, undefined];
     }
-    return items.splice(randomIndex, 1)[0];
+    let sel = items[keys[randomIndex]];
+    delete items[keys[randomIndex]];
+    return [sel, keys[randomIndex]];
 }
 
 export {generateCode, randomInt, selectWeighted, drawRandom}

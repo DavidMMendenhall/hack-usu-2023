@@ -1,8 +1,14 @@
 // @ts-check
 import { generateMaze } from "./maze.js";
+import { convertToRegionGraph, Region } from "./graph.js";
 import { randomInt, selectWeighted, drawRandom } from "../../util/random.js";
 
-function World(){
+/**
+ * 
+ * @param {string} playerCode 
+ * @returns 
+ */
+function World(playerCode){
     const WORLD_SIZE = 9;
     /** @type {{up:number, left:number, right:number, down:number}[][]} */
     let cells = generateMaze(WORLD_SIZE);
@@ -34,20 +40,74 @@ function World(){
     for(let row = 0; row < WORLD_SIZE; row++){
         let cRow = [];
         for(let col = 0; col < WORLD_SIZE; col++){
-            cRow.push(GenerateRandomWorldCell(cells[row][col]));
+            cRow.push(GenerateRandomWorldCell(cells[row][col], row, col, playerCode));
         }
         worldCells.push(cRow);
     }
+
+    worldCells[startPos.row][startPos.col] = CreateCell(0, cells[startPos.row][startPos.col], startPos.row, startPos.col, playerCode);
+    worldCells[bossCell.row][bossCell.col] = CreateCell(1, cells[bossCell.row][bossCell.col], bossCell.row, bossCell.col, playerCode);
+
+
     
-    console.log(worldCells);
+    // traverse cells and lock doors
+    let worldGraph = convertToRegionGraph(worldCells, startPos, bossCell, playerCode);
+    let nextKeyId = 1;
+    let items = {}
+    
+    const DOOR_LOCK_CHANCE = 0.;
+
+    /**
+     * 
+     * @param {Region} region 
+     */
+    let lockDoors = (region) => {
+        let ancestorCell = region.getParent()?.cell;
+        if(ancestorCell){
+            let shouldLockDoor = Math.random() < DOOR_LOCK_CHANCE;
+            if(shouldLockDoor){
+               if(ancestorCell.col + 1 == region.cell?.col){
+                    worldCells[ancestorCell.row][ancestorCell.col].doors['right'] = nextKeyId;
+               }
+               if(ancestorCell.col - 1 == region.cell?.col){
+                    worldCells[ancestorCell.row][ancestorCell.col].doors['left'] = nextKeyId;
+                }
+
+                if(ancestorCell.row + 1 == region.cell?.row){
+                    worldCells[ancestorCell.row][ancestorCell.col].doors['down'] = nextKeyId;
+               }
+               if(ancestorCell.row - 1 == region.cell?.row){
+                    worldCells[ancestorCell.row][ancestorCell.col].doors['up'] = nextKeyId;
+                }
+                let keyName = `${playerCode}_key_${nextKeyId}`;
+                region.addRequirement(keyName);
+                items[keyName] = false; 
+                nextKeyId ++;
+            }
+        }
+        for(let i = 0; i < region.children.length; i++){
+            lockDoors(region.children[i]);
+        }
+    }
+
+    lockDoors(worldGraph);
+
+    
+    
+
     return {
         cells: worldCells,
+        start: startPos,
+        boss: bossCell,
+        root: worldGraph,
+        items: items
     }
 
 }
 /**
  * @typedef WorldCell
  * @property {string} name
+ * @property {string} type
  * @property {Object.<string, number>} chests
  * @property {Object.<string, number>} doors 0 indicates an open path, other number indicates id of item required
  * @property {{up:number,left:number,right:number,down:number}} walls
@@ -57,9 +117,9 @@ function World(){
 /**
  * @param {{up:number, left:number, right:number, down:number}} cell
  */
-function GenerateRandomWorldCell(cell){
+function GenerateRandomWorldCell(cell, row, col, player){
     let type = selectWeighted(cellTypeDefs);
-    return CreateCell(type, cell)
+    return CreateCell(type, cell, row, col, player)
 }
 
 /**
@@ -68,18 +128,16 @@ function GenerateRandomWorldCell(cell){
  * @param {{up:number, left:number, right:number, down:number}} cell
  * @returns {WorldCell}
  */
-function CreateCell(type, cell){
+function CreateCell(type, cell, row, col, player){
     let def = cellTypeDefs[type];
-    let chestCount = randomInt(def.chest.min, def.chest.max);
-    let chestOptions = ['up', 'down', 'left', 'right'];
-    let chests = {};
+    let chests = {
+        up: -1,
+        left: -1,
+        down: -1,
+        right: -1
+    };
 
     let enemies = {};
-
-    while(chestCount > 0 && chestOptions.length > 0){
-        chestCount --;
-        chests[drawRandom(chestOptions)] = -1;
-    }
 
     let directions = ['up', 'down', 'left', 'right'];
     let doors = {};
@@ -93,6 +151,7 @@ function CreateCell(type, cell){
 
     return {
         type: cellTypeDefs[type].name,
+        name: `player_${player}_${row}_${col}`,
         // @ts-ignore
         chests: chests,
         // @ts-ignore
@@ -196,5 +255,14 @@ let cellTypeDefs = [
         }
     }
 ]
+
+/**
+ * 
+ * @param {number} count 
+ * @param {WorldCell[][]} world 
+ */
+function lockDoors(count, world){
+    
+}
 
 export { World };
