@@ -21,7 +21,7 @@ function OpenGameState() {
 
 				if (this.room.game.generated) {
 					this.engine.popState();
-					this.engine.pushState(GameState(this.room.game));
+					this.engine.pushState(GameState(this.room));
 				}
 
 				let id = params.room.subcribeToGameUpdates(game => {
@@ -31,7 +31,7 @@ function OpenGameState() {
 					}
 
 					this.engine.popState();
-					this.engine.pushState(GameState(game));
+					this.engine.pushState(GameState(params.room));
 					params.room.unsubscribeListener(id);
 				});
 			}).catch((reason) => {

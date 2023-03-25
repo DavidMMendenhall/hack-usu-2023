@@ -38,7 +38,7 @@ function HostGameState() {
 				}
 
 				this.engine.popState();
-				this.engine.pushState(GameState(game));
+				this.engine.pushState(GameState(params.room));
 				params.room.unsubscribeListener(id);
 			});
 		},

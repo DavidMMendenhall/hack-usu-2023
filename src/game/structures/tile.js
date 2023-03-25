@@ -59,7 +59,13 @@ class DoorTile extends Tile {
 }
 
 class ChestTile extends Tile {
-  collides = false;
+  collides = true;
+
+	/** @type HTMLImageElement */
+  // @ts-ignore
+	static chestTexture = document.getElementById("chest");
+	static openTexture = document.getElementById("chest-open");
+
   /**
    * 
    * @param {number} content 
@@ -69,8 +75,10 @@ class ChestTile extends Tile {
 		this.content = content;
   }
   draw(tx, x, y, w, h) {
-    tx.ctx.fillStyle = this.content == 0 ? "#00FF00" : "#FF0000";
+    tx.ctx.fillStyle = "#dd7777";
     tx.ctx.fillRect(x, y, w, h);
+
+    tx.ctx.drawImage(this.content == 0 ? ChestTile.openTexture : ChestTile.chestTexture, x, y, w, h);
   }
 }
 

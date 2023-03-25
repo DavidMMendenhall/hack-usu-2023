@@ -4,21 +4,32 @@ import {Cell} from "../structures/cell.js";
 import {World} from "../generator/world.js";
 import {BoundingBox} from "../../engine/collision.js";
 import {Texture} from "../../engine/render.js";
-import {DoorTile} from "../structures/tile.js";
+import {ChestTile, DoorTile} from "../structures/tile.js";
 import {ScrollingState} from "./scrolling.js";
 
 const MOVEMENT_SPEED = 3;
 
-function GameState(game) {
+function GameState(room) {
 	return State({
+		get multiworld() {
+			return this.game.multiworld;
+		},
+
+		get world() {
+			return this.multiworld.worlds[this.playerId];
+		},
+		
+		get maze() {
+			return this.world.cells;
+		},
+
 		initialize() {
 			this.playerTexture = document.getElementById("player");
 
-			console.log(game.multiworld.worlds, localStorage["playerId"]);
-			this.game = game;
-			this.multiworld = game.multiworld;
-			this.world = game.multiworld.worlds[localStorage["playerId"]];
-			this.maze = this.world.cells;
+			this.playerId = localStorage["playerId"];
+			console.log(room);
+			this.room = room;
+			this.game = room.game;
 			this.cx = 0;
 			this.cy = 0;
 			this.updateCell();
@@ -59,6 +70,11 @@ function GameState(game) {
 				"up": () => {
 					this.player.forces.x = 0;
 				},
+			});
+
+			let id = room.subcribeToGameUpdates(game => {
+				console.log('game has updated');
+				room.unsubscribeListener(id);
 			});
 		},
 
@@ -188,13 +204,6 @@ function GameState(game) {
 				}
 			);
 
-			// tx.ctx.strokeRect(
-			// 	this.player.bb.x1,
-			// 	this.player.bb.y1,
-			// 	this.player.bb.w,
-			// 	this.player.bb.h
-			// );
-
 			tx.ctx.restore();
 		},
 
@@ -202,6 +211,8 @@ function GameState(game) {
 			let cell =  new Cell(this.maze[this.cy][this.cx]);
 			this.staticBodies = [];
 			this.doorBoxes = {};
+			this.chests = [];
+
 			cell.tiles.forEach((line, yi) => {
 				line.forEach((tile, xi) => {
 					if (tile.collides) {
@@ -216,6 +227,10 @@ function GameState(game) {
 
 						if (tile instanceof DoorTile) {
 							this.doorBoxes[tile.direction] = bb;
+						}
+
+						if (tile instanceof ChestTile) {
+							this.chests.push({ tile: tile, bb: bb });
 						}
 					}
 				});
