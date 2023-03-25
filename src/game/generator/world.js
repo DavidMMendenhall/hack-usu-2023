@@ -3,7 +3,7 @@ import { generateMaze } from "./maze.js";
 import { convertToRegionGraph, Region } from "./graph.js";
 import { randomInt, selectWeighted, drawRandom } from "../../util/random.js";
 import { idGen } from "./id.js";
-
+import { getItemColor } from "./keycolor.js";
 /**
  * 
  * @param {string} playerCode 
@@ -81,8 +81,9 @@ function World(playerCode){
                     worldCells[ancestorCell.row][ancestorCell.col].doors['up'] = itemId;
                 }
                 let keyName = `${playerCode}_key_${itemId}`;
+                let displayName = `${getItemColor(itemId)} Key`
                 region.addRequirement(itemId);
-                items[itemId] = {name:keyName, collected:false, world:playerCode};
+                items[itemId] = {name:keyName, collected:false, world:playerCode, display:displayName};
             }
         }
         for(let i = 0; i < region.children.length; i++){

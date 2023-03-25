@@ -21,8 +21,3 @@ engine.start();
 
 // @ts-ignore
 window.engine = engine;
-
-// console.log(GenerateMultiWorld(['bob']));
-let room = createRoom('bob');
-let mw = GenerateMultiWorld(['bob'])
-room.room.setGame(mw);

@@ -6,6 +6,7 @@ import { World } from "./world.js";
 /**
  * @typedef Item
  * @property {string} name
+ * @property {string} display
  * @property {boolean} collected 
  * @property {string} world 
  */
