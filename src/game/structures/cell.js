@@ -16,7 +16,7 @@ class Cell {
 				x: 4, y: 3
 			},
 			'down': {
-				x: 6, y: 8
+				x: 7, y: 7
 			},
 			'right': {
 				x: 8, y: 6
@@ -58,8 +58,6 @@ class Cell {
 				} else {
 					this.door = false;
 				}
-
-				
 
 				let tile = this.door ? new DoorTile(this.direction) : 
 							this.border ? new BorderTile() : 
