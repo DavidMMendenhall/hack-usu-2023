@@ -13,7 +13,6 @@ function OpenGameState() {
 					this.quit = true;
 					return;
 				}
-				console.log(params);
 				this.room = params.room;
 				this.playerId = localStorage["playerId"];
 				this.player = this.room.players[this.playerId];
