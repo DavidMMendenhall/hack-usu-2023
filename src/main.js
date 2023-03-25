@@ -5,7 +5,7 @@ import { Engine } from "./engine/engine.js";
 import { MainMenuState } from "./game/states/mainmenu.js";
 
 // console.log(firebase)
-let room = createRoom('bob').room;
+let room = createRoom('bob');
 
 joinRoom('sarah', room.roomCode);
 
@@ -16,4 +16,5 @@ let engine = Engine({
 
 engine.start();
 
-export { engine };
+// @ts-ignore
+window.engine = engine;

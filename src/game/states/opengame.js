@@ -2,23 +2,25 @@
 import "../../engine/menu.js";
 import "../../engine/render.js";
 import {State} from "../../engine/state.js";
-import {createRoom} from "../../util/database.js";
+import {openRoom} from "../../util/database.js";
 
-function HostGameState() {
+function OpenGameState() {
 	return State({
-		initialize() {
-			while (!this.name) {
-				this.name = prompt("Choose a name:");
-			}
-
-			let params = createRoom(this.name);
-			this.room = params.room;
-			this.player = params.player;
-			this.playerId = params.player.code;
-
-			localStorage["roomCode"] = this.room.roomCode;
-			localStorage["playerId"] = this.playerId;
-			console.log(this.room);
+		initialize(roomCode) {
+			this.roomCode = localStorage["roomCode"];
+			openRoom(this.roomCode).then((params) => {
+				if (!params) {
+					this.quit = true;
+					return;
+				}
+				console.log(params);
+				this.room = params.room;
+				this.playerId = localStorage["playerId"];
+				this.player = this.room.players[this.playerId];
+			}).catch((reason) => {
+				console.log(reason);
+				this.quit = true;
+			});
 		},
 
 		update(delta) {
@@ -26,12 +28,18 @@ function HostGameState() {
 
 		render(tx) {
       // tx.ctx.drawImage(this.bg, 0, 0, tx.canvas.width, tx.canvas.height);
+
       tx.ctx.save();
       tx.ctx.translate(tx.canvas.width / 2, 150);
 			tx.ctx.fillStyle = "black";
 			tx.ctx.textAlign = "center";
 			tx.ctx.font = "30px Arial";
-			tx.ctx.fillText("Your room code is:", 0, 0);
+			if (!this.room) {
+				tx.ctx.fillText("Loading...", 0, 300);
+				tx.ctx.restore();
+				return;
+			}
+			tx.ctx.fillText("You've joined room", 0, 0);
 
 			tx.ctx.font = "100px Arial";
 			tx.ctx.fillText(this.room.roomCode, 0, 120);
@@ -51,4 +59,4 @@ function HostGameState() {
 	});
 }
 
-export { HostGameState };
+export { OpenGameState };

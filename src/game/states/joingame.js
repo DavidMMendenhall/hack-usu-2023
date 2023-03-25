@@ -16,12 +16,20 @@ function JoinGameState() {
 			}
 
 			joinRoom(this.name, this.roomCode).then((params) => {
-				this.playerId = params.player;
+				if (!params) {
+					this.quit = true;
+					return;
+				}
 				this.room = params.room;
+				this.player = params.player;
+				this.playerId = params.player.code;
 				console.log(this.room);
+			}).catch(() => {
+				this.quit = true;
 			});
 
 			localStorage["roomCode"] = this.roomCode;
+			localStorage["playerId"] = this.playerId;
 		},
 
 		update(delta) {

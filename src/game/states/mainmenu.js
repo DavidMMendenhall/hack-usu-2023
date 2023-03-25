@@ -3,6 +3,7 @@ import {Texture} from "../../engine/render.js";
 import {State} from "../../engine/state.js";
 import {HostGameState} from "./hostgame.js";
 import {JoinGameState} from "./joingame.js";
+import {OpenGameState} from "./opengame.js";
 
 function MainMenuState() {
 	return State({
@@ -22,7 +23,7 @@ function MainMenuState() {
 			if (this.roomCode) {
 				items.unshift({
 					text: `Rejoin Game (${this.roomCode})`,
-					//callback: () => this.engine.pushState(GameState(this.roomCode)),
+					callback: () => this.engine.pushState(OpenGameState()),
 				})
 			}
 
