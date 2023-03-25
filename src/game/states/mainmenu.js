@@ -2,6 +2,7 @@ import {Menu} from "../../engine/menu.js";
 import {Texture} from "../../engine/render.js";
 import {State} from "../../engine/state.js";
 import {HostGameState} from "./hostgame.js";
+import {JoinGameState} from "./joingame.js";
 
 function MainMenuState() {
 	return State({
@@ -15,13 +16,13 @@ function MainMenuState() {
 				},
 				{
 					text: "Join Game",
-					// callback: () => this.engine.pushState(JoinState()),
+					callback: () => this.engine.pushState(JoinGameState()),
 				},
 			];
 			if (this.roomCode) {
 				items.unshift({
 					text: `Rejoin Game (${this.roomCode})`,
-					// callback: () => this.engine.pushState(GameState(this.roomCode)),
+					//callback: () => this.engine.pushState(GameState(this.roomCode)),
 				})
 			}
 

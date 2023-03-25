@@ -11,7 +11,10 @@ function HostGameState() {
 				this.name = prompt("Choose a name:");
 			}
 
-			this.room = createRoom(this.name);
+			let params = createRoom(this.name);
+			this.room = params.room;
+			this.playerId = params.player;
+
 			localStorage["roomCode"] = this.room.roomCode;
 			console.log(this.room);
 		},
@@ -30,6 +33,17 @@ function HostGameState() {
 
 			tx.ctx.font = "100px Arial";
 			tx.ctx.fillText(this.room.roomCode, 0, 120);
+
+			tx.ctx.translate(0, 250);
+			tx.ctx.font = "30px Arial";
+			tx.ctx.fillText("Players here now:", 0, -35);
+
+			tx.ctx.font = "25px Arial";
+			Object.keys(this.room.players)
+				.map(k => this.room.players[k])
+				.forEach((player, idx) => {
+					tx.ctx.fillText(player.name, 0, idx * 30);
+				});
       tx.ctx.restore();
 		},
 	});
