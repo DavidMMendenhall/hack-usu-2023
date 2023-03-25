@@ -62,6 +62,7 @@ const enginePrototype = {
 	 * @param {number} delta
 	 */
 	update(delta) {
+		delta /= 1000;
 		this.getState()?.update(delta);
 		while (this.getState()?.quit) {
 			let ret = this.popState();

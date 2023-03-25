@@ -5,6 +5,7 @@ import {HostGameState} from "./hostgame.js";
 import {JoinGameState} from "./joingame.js";
 import {OpenGameState} from "./opengame.js";
 import {CellTestState} from "./celltest.js";
+import {GameState} from "./game.js";
 
 function MainMenuState() {
 	return State({
@@ -21,8 +22,12 @@ function MainMenuState() {
 					callback: () => this.engine.pushState(JoinGameState()),
 				},
 				{
-					text: "Secret Test Option",
+					text: "Cell Test",
 					callback: () => this.engine.pushState(CellTestState()),
+				},
+				{
+					text: "Gameplay Demo",
+					callback: () => this.engine.pushState(GameState()),
 				}
 			];
 			if (this.roomCode) {

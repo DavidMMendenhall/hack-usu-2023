@@ -4,6 +4,8 @@ import {rotationFromDirection} from "../../engine/render.js";
 import {Texture} from "../../engine/render.js";
 
 class Tile {
+	collides = false;
+
   draw(tx, x, y, w, h) {
     tx.ctx.fillStyle = "#dd7777";
     tx.ctx.fillRect(x, y, w, h);
@@ -11,6 +13,8 @@ class Tile {
 }
 
 class WallTile extends Tile {
+	collides = true;
+
   draw(tx, x, y, w, h) {
     tx.ctx.fillStyle = "#E5C883";
     tx.ctx.fillRect(x, y, w, h);
@@ -18,6 +22,8 @@ class WallTile extends Tile {
 }
 
 class BorderTile extends Tile {
+	collides = true;
+
   draw(tx, x, y, w, h) {
     tx.ctx.fillStyle = "#748275";
     tx.ctx.fillRect(x, y, w, h);
@@ -25,6 +31,8 @@ class BorderTile extends Tile {
 }
 
 class DoorTile extends Tile {
+	collides = true;
+
 	/** @type HTMLImageElement */
   // @ts-ignore
 	static doorTexture = document.getElementById("door");
