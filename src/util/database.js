@@ -95,7 +95,10 @@ let createRoom = (playerName) => {
     firebase.database().ref("/rooms/" + roomCode).set(roomData);
 
 
-    return new Room(roomData);
+    return {
+        room: new Room(roomData),
+        player: player
+    };
 }
 
 /**
@@ -105,6 +108,7 @@ let createRoom = (playerName) => {
  */
 async function joinRoom(playerName, roomCode){
     let roomInfo;
+    let player = new Player(playerName, generateCode(6));
     // @ts-ignore
     roomInfo = await firebase.database().ref("/rooms/" + roomCode).get();
     if(roomInfo.val() == null){
@@ -115,8 +119,11 @@ async function joinRoom(playerName, roomCode){
     let room = new Room(roomInfo);
     let playerId = generateCode(6);
     // @ts-ignore
-    firebase.database().ref("/rooms/" + roomCode + '/players/' + playerId).set({name:playerName});
-    return room;
+    firebase.database().ref("/rooms/" + roomCode + '/players/' + player.code).set(player.getData());
+    return {
+        room: room,
+        player: player
+    };
 
 }
 
@@ -130,7 +137,9 @@ async function openRoom(roomCode){
     }
     
     let room = new Room(roomInfo);
-    return room;
+    return{
+        room: room,
+    };
 
 }
 
