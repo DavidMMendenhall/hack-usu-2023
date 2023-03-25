@@ -60,9 +60,10 @@ let GenerateMultiWorld = (players)=>{
                 break;
             }
         }
+        getAvailable(state, multiworldRoot, availableLocations, requirements);
     }
         
-        getAvailable(state, multiworldRoot, availableLocations, requirements);
+        
 
     for(let i = 0; i < playerCount; i++){
         // @ts-ignore
