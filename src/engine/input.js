@@ -41,3 +41,5 @@ function Keyboard() {
 
   return keyboard;
 }
+
+export { Keyboard };

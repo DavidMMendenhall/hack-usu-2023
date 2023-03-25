@@ -105,3 +105,5 @@ function BoundingBox(spec) {
     };
   }
 }
+
+export { BoundingBox };

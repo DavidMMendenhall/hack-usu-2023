@@ -1,3 +1,6 @@
+import "render";
+import "input";
+
 /** @typedef { import('./types').Texture } Texture */
 /** @typedef { import('./types').MenuButton } MenuButton */
 /** @typedef { import('./types').Menu } Menu */
@@ -126,3 +129,5 @@ function Menu(spec) {
 
 	return spec;
 }
+
+export { Menu };

@@ -37,3 +37,5 @@ function rotationFromDirection(str) {
 function timeString(num) {
   return `${(num / 60 / 1000) | 0}min ${(num / 1000 % 60) | 0}sec`;
 }
+
+export { Texture, rotationFromDirection, timeString };

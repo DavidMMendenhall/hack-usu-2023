@@ -1,3 +1,5 @@
+import("render");
+
 /** @typedef { import('./types').Texture } Texture */
 
 const particlePrototype = {
@@ -94,3 +96,5 @@ function ParticleGenerator(x, y, width, height, xSpacing, ySpacing, color) {
 
 	return ret;
 }
+
+export { ParticleGenerator };

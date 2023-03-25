@@ -1,10 +1,10 @@
-import("../engine/menu");
-import("../engine/state");
+import "../../engine/menu";
+import "../../engine/state";
 
 function MainMenuState() {
 	return State({
 		initialize() {
-			this.room_code = localStorage.getItem("room_code");
+			this.roomCode = localStorage.getItem("roomCode");
 
 			let items = [
 				{
@@ -18,8 +18,8 @@ function MainMenuState() {
 			];
 			if (room_code) {
 				items.unshift({
-					text: `Rejoin Game (${this.room_code})`,
-					callback: () => this.engine.pushState(GameState(room_code)),
+					text: `Rejoin Game (${this.roomCode})`,
+					callback: () => this.engine.pushState(GameState(this.roomCode)),
 				})
 			}
 
@@ -41,3 +41,5 @@ function MainMenuState() {
 		},
 	});
 }
+
+export { MainMenuState };

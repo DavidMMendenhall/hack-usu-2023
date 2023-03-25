@@ -1,3 +1,5 @@
+import "input";
+
 /** @typedef { import('./types').State } State */
 
 const statePrototype = {
@@ -58,3 +60,5 @@ function State(spec) {
 
 	return spec;
 };
+
+export { State };
