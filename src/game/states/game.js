@@ -30,8 +30,8 @@ function GameState(room) {
 			console.log(room);
 			this.room = room;
 			this.game = room.game;
-			this.cx = 0;
-			this.cy = 0;
+			this.cx = this.world.start.col;
+			this.cy = this.world.start.row;
 			this.updateCell();
 
 			this.scrolling = false;
@@ -87,6 +87,18 @@ function GameState(room) {
 							this.room.collectItem(retrievedItem);
 						}
 					}
+
+					for (const k of Object.keys(this.doors)) {
+						let d = this.doors[k];
+						let pbb = this.player.bb;
+						let dbb = d.bb;
+
+						let dist = Math.sqrt((pbb.cx - dbb.cx)**2 + (pbb.cy - dbb.cy)**2);
+
+						if (dist < 2 && d.tile.unlockItem != 0 && this.world.items[d.tile.unlockItem].collected) {
+							d.tile.unlockItem = 0;
+						}
+					}
 				}
 			});
 			let id = room.subcribeToGameUpdates(game => {
@@ -124,8 +136,9 @@ function GameState(room) {
 			});
 
 			let done = false;
-			for (const dir of Object.keys(this.doorBoxes)) {
-				if (nextBoundingBox.collidesWith(this.doorBoxes[dir])) {
+			for (const dir of Object.keys(this.doors)) {
+				let door = this.doors[dir];
+				if (door.tile.unlockItem == 0 && nextBoundingBox.collidesWith(door.bb)) {
 					switch (dir) {
 						case "n":
 							this.cy--;
@@ -227,7 +240,7 @@ function GameState(room) {
 		updateCell() {
 			let cell =  new Cell(this.maze[this.cy][this.cx]);
 			this.staticBodies = [];
-			this.doorBoxes = {};
+			this.doors = {};
 			this.chests = [];
 
 			cell.tiles.forEach((line, yi) => {
@@ -243,7 +256,7 @@ function GameState(room) {
 						this.staticBodies.push(bb);
 
 						if (tile instanceof DoorTile) {
-							this.doorBoxes[tile.direction] = bb;
+							this.doors[tile.direction] = { tile: tile, bb: bb };
 						}
 
 						if (tile instanceof ChestTile) {
