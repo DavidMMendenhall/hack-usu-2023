@@ -12,20 +12,21 @@ class Tile {
 
 class WallTile extends Tile {
   draw(tx, x, y, w, h) {
-    tx.ctx.fillStyle = "#bb0000";
+    tx.ctx.fillStyle = "#E5C883";
     tx.ctx.fillRect(x, y, w, h);
   }
 }
 
 class BorderTile extends Tile {
   draw(tx, x, y, w, h) {
-    tx.ctx.fillStyle = "#880000";
+    tx.ctx.fillStyle = "#748275";
     tx.ctx.fillRect(x, y, w, h);
   }
 }
 
 class DoorTile extends Tile {
 	/** @type HTMLImageElement */
+  // @ts-ignore
 	static doorTexture = document.getElementById("door");
 	/**
 	 * @param {string} direction

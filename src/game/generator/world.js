@@ -38,9 +38,11 @@ function World(){
         }
         worldCells.push(cRow);
     }
-
-    console.log(worldCells)
-
+    
+    console.log(worldCells);
+    return {
+        cells: worldCells,
+    }
 
 }
 /**
