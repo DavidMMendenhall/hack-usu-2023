@@ -121,42 +121,6 @@ function GameState() {
 				}
 			}
 
-			// for (const bb of this.staticBodies) {
-			// 	if (this.player.bb.collidesWith(bb)) {
-			// 		if (this.player.bb.cx < bb.cx) {
-			// 			if (this.player.forces.x > 0) {
-			// 				nextX = bb.x1 - this.player.bb.w;
-			// 			} else if (this.player.forces.x > 0) {
-			// 				nextX = bb.x1 - this.player.bb.w - 0.05;
-			// 			}
-			// 		}
-
-			// 		else if (this.player.bb.cx > bb.cx) {
-			// 			if (this.player.forces.x < 0) {
-			// 				nextX = bb.x2;
-			// 			} else if (this.player.forces.x > 0) {
-			// 				nextX = bb.x2 + 0.05;
-			// 			}
-			// 		}
-
-			// 		if (this.player.bb.cy < bb.cy) {
-			// 			if (this.player.forces.y > 0) {
-			// 				nextY = bb.y1 - this.player.bb.h;
-			// 			} else if (this.player.forces.y < 0) {
-			// 				nextY = bb.y1 - this.player.bb.h - 0.05;
-			// 			}
-			// 		}
-
-			// 		else if (this.player.bb.cy > bb.cy) {
-			// 			if (this.player.forces.y < 0) {
-			// 				nextY = bb.y2;
-			// 			} else if (this.player.forces.y > 0) {
-			// 				nextY = bb.y2 + 0.05;
-			// 			}
-			// 		}
-			// 	}
-			// }
-
 			this.player.bb.x1 = nextX;
 			this.player.bb.y1 = nextY;
 		},
