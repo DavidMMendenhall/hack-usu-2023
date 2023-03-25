@@ -11,13 +11,14 @@ const enginePrototype = {
 			topState = this.stateStack[this.stateStack.length - 1];
 		}
 
-		this.stateStack.push(state);
 		state.parentState = topState;
 		state.engine = this;
 		state.quit = false;
 		state.returnValue = null;
 
 		state.initialize();
+
+		this.stateStack.push(state);
 	},
 
 	/**

@@ -104,7 +104,7 @@ const menuButtonPrototype = {};
 /**
  * Instantiate a menu
  *
- * @param {Array<string>} spec
+ * @param {Array} spec
  */
 function Menu(spec) {
 	spec.__proto__ = menuPrototype;
