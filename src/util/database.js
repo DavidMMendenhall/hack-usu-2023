@@ -133,7 +133,7 @@ async function openRoom(roomCode){
     return null;
     }
     
-    let room = new Room(roomInfo);
+    let room = new Room(roomInfo.val());
     return{
         room: room,
     };
