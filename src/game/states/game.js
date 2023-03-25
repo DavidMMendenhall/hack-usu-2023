@@ -4,6 +4,7 @@ import {Cell} from "../structures/cell.js";
 import {World} from "../generator/world.js";
 import {BoundingBox} from "../../engine/collision.js";
 import {Texture} from "../../engine/render.js";
+import {DoorTile} from "../structures/tile.js";
 
 const MOVEMENT_SPEED = 3;
 
@@ -83,16 +84,37 @@ function GameState() {
 				h: this.player.bb.h,
 			});
 
-			let doorDetectorBox = new BoundingBox({
-				x: nextX,
-				y: nextY,
-				w: this.player.bb.w,
-				h: this.player.bb.h,
-			});
+			let done = false;
+			for (const dir of Object.keys(this.doorBoxes)) {
+				if (nextBoundingBox.collidesWith(this.doorBoxes[dir])) {
+					switch (dir) {
+						case "n":
+							this.cy--;
+							break;
+						case "s":
+							this.cy++;
+							break;
+						case "e":
+							this.cx++;
+							break;
+						case "w":
+							this.cx--;
+							break;
+						default:
+							throw "RIGGED";
+					}
+
+					this.updateCell();
+					return;
+				}
+			}
+
+			if (done) {
+				return;
+			}
 
 			for (const bb of this.staticBodies) {
 				if (nextBoundingBox.collidesWith(bb)) {
-					console.log(nextBoundingBox.cx, bb.cx, nextBoundingBox.cy, bb.cy);
 					if (nextBoundingBox.cx < bb.cx && this.player.forces.x > 0) {
 						nextX = prevX;
 						nextY = prevY;
@@ -170,36 +192,42 @@ function GameState() {
 		updateCell() {
 			let cell =  new Cell(this.maze[this.cy][this.cx]);
 			this.staticBodies = [];
-			this.doorsBoxes = [];
+			this.doorBoxes = {};
 			cell.tiles.forEach((line, yi) => {
 				line.forEach((tile, xi) => {
 					if (tile.collides) {
-						this.staticBodies.push(new BoundingBox({
+						let bb = new BoundingBox({
 							x: xi,
 							y: yi,
 							w: 1,
 							h: 1,
-						}));
+						});
+
+						this.staticBodies.push(bb);
+
+						if (tile instanceof DoorTile) {
+							this.doorBoxes[tile.direction] = bb;
+						}
 					}
 				});
 
 				this.cell = cell;
-
-				this.player = {
-					bb: new BoundingBox({
-						cx: this.cell.tilesX / 2,
-						cy: this.cell.tilesY / 2,
-						w: 1,
-						h: 1,
-					}),
-					angle: Math.PI / 2,
-					forces: {
-						x: 0,
-						y: 0,
-					}
-				};
-
 			});
+
+			this.player = {
+				bb: new BoundingBox({
+					cx: this.cell.tilesX / 2,
+					cy: this.cell.tilesY / 2,
+					w: 0.8,
+					h: 0.8,
+				}),
+				angle: Math.PI / 2,
+				forces: {
+					x: 0,
+					y: 0,
+				}
+			};
+
 		}
 	});
 }
