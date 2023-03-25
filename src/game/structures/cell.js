@@ -25,6 +25,20 @@ class Cell {
 				x: 3, y: 6
 			}
 		}
+		const DOOR_POS = {
+			'up': {
+				x: Math.floor(this.tilesX/2), y: 0
+			},
+			'down': {
+				x: Math.floor(this.tilesX/2), y: this.tilesY -1
+			},
+			'left': {
+				x: 0, y: Math.floor(this.tilesY/2)
+			},
+			'right': {
+				x: this.tilesX - 1, y: Math.floor(this.tilesY/2)
+			}
+		}
 		/** @type {Tile[][]} */
 		this.tiles = [];
 		for (let y = 0; y < this.tilesY; y++) {
@@ -46,20 +60,31 @@ class Cell {
 					}
 				})
 
-				this.door = true; 
-				if (wc.walls.left  == 0 && x == 0 && y == ((this.tilesY / 2) | 0)) {
-					this.direction = "w";
-				} else if (wc.walls.up    == 0 && y == 0 && x == ((this.tilesX / 2) | 0)) {
-					this.direction = "n";
-				} else if (wc.walls.right == 0 && x == this.tilesX - 1 && y == ((this.tilesY / 2) | 0)) {
-					this.direction = "e";
-				} else if (wc.walls.down  == 0 && y == this.tilesY - 1 && x == ((this.tilesX / 2) | 0)) {
-					this.direction = "s";
-				} else {
-					this.door = false;
-				}
+				this.door = -1;
+				this.direction = 'w';
+				Object.getOwnPropertyNames(DOOR_POS).forEach((key)=>{
+					if(x == DOOR_POS[key].x && y == DOOR_POS[key].y && wc.doors[key] !== undefined){
+						this.door = wc.doors[key];
+						switch(key){
+							case 'up':
+								this.direction = 'n';
+								break;
+							case 'down':
+								this.direction = 's';
+								break;
+							case 'left':
+								this.direction = 'w';
+								break;
+							case 'right':
+								this.direction = 'e';
+								break;
+						}
+					}
+				})
 
-				let tile = this.door ? new DoorTile(this.direction) : 
+				
+
+				let tile = this.door != -1 ? new DoorTile(this.direction, this.door) : 
 							this.border ? new BorderTile() : 
 							this.wall ? new WallTile() : 
 							this.chest != -1 ? new ChestTile(this.chest) :

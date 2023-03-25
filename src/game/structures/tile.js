@@ -2,6 +2,7 @@
 
 import {rotationFromDirection} from "../../engine/render.js";
 import {Texture} from "../../engine/render.js";
+import { getItemColor } from "../generator/keycolor.js";
 
 class Tile {
 	collides = false;
@@ -38,17 +39,19 @@ class DoorTile extends Tile {
 	static doorTexture = document.getElementById("door");
 	/**
 	 * @param {string} direction
+   * @param {number} unlockItem
 	 */
-	constructor(direction) {
+	constructor(direction, unlockItem) {
 		super();
 		this.direction = direction;
+    this.unlockItem = unlockItem;
   }
 
 	/**
 	 * @param {Texture} tx
 	 */
   draw(tx, x, y, w, h) {
-    tx.ctx.fillStyle = "#dd7777";
+    tx.ctx.fillStyle = this.unlockItem == 0 ? "#dd7777" : getItemColor(this.unlockItem);
     tx.ctx.fillRect(x, y, w, h);
 
     tx.ctx.fillStyle = "#bb0000";
