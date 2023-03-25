@@ -38,10 +38,11 @@ let Room = function(data){
     let updateGame = (data)=>{
         let newGameData = data.val();
         if(newGameData){
-            this.game = newGameData;
+            this.game.multiworld = newGameData.multiworld;
+            this.game.generated = newGameData.generated;
             let keys = Object.getOwnPropertyNames(gameListeners);
             for(let i = 0; i < keys.length; i++){
-                gameListeners[keys[i]](newGameData);
+                gameListeners[keys[i]](this.game);
             }
         }
         
