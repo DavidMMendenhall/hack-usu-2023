@@ -9,12 +9,15 @@ import {ScrollingState} from "./scrolling.js";
 
 const MOVEMENT_SPEED = 3;
 
-function GameState() {
+function GameState(game) {
 	return State({
 		initialize() {
 			this.playerTexture = document.getElementById("player");
 
-			this.world = World();
+			console.log(game);
+			this.game = game;
+			this.multiworld = game.multiworld;
+			this.world = game.multiworld.worlds[localStorage["playerId"]];
 			this.maze = this.world.cells;
 			this.cx = 0;
 			this.cy = 0;
