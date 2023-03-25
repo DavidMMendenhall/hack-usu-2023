@@ -14,7 +14,7 @@ function GameState(game) {
 		initialize() {
 			this.playerTexture = document.getElementById("player");
 
-			console.log(game);
+			console.log(game.multiworld.worlds, localStorage["playerId"]);
 			this.game = game;
 			this.multiworld = game.multiworld;
 			this.world = game.multiworld.worlds[localStorage["playerId"]];

@@ -32,6 +32,11 @@ function HostGameState() {
 			});
 
 			let id = params.room.subcribeToGameUpdates(game => {
+				// @ts-ignore
+				if (!game.generated) {
+					return;
+				}
+
 				this.engine.popState();
 				this.engine.pushState(GameState(game));
 				params.room.unsubscribeListener(id);

@@ -3,6 +3,7 @@ import "../../engine/menu.js";
 import "../../engine/render.js";
 import {State} from "../../engine/state.js";
 import {openRoom} from "../../util/database.js";
+import {GameState} from "./game.js";
 
 function OpenGameState() {
 	return State({
@@ -13,9 +14,26 @@ function OpenGameState() {
 					this.quit = true;
 					return;
 				}
+				console.log(params.room);
 				this.room = params.room;
 				this.playerId = localStorage["playerId"];
 				this.player = this.room.players[this.playerId];
+
+				if (this.room.game.generated) {
+					this.engine.popState();
+					this.engine.pushState(GameState(this.room.game));
+				}
+
+				let id = params.room.subcribeToGameUpdates(game => {
+					// @ts-ignore
+					if (!game.generated) {
+						return;
+					}
+
+					this.engine.popState();
+					this.engine.pushState(GameState(game));
+					params.room.unsubscribeListener(id);
+				});
 			}).catch((reason) => {
 				console.log(reason);
 				this.quit = true;
