@@ -103,8 +103,8 @@ let createRoom = (playerName) => {
 
 /**
  * 
- * @param {*} playerName 
- * @param {*} roomCode 
+ * @param {string} playerName 
+ * @param {string} roomCode 
  */
 async function joinRoom(playerName, roomCode){
     let roomInfo;
@@ -144,4 +144,4 @@ async function openRoom(roomCode){
 }
 
 
-export{createRoom, joinRoom}
+export{createRoom, joinRoom, openRoom}
