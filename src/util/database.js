@@ -112,12 +112,9 @@ async function joinRoom(playerName, roomCode){
     // @ts-ignore
     roomInfo = await firebase.database().ref("/rooms/" + roomCode).get();
     if(roomInfo.val() == null){
-    
-    return null;
+        return null;
     }
-    
-    let room = new Room(roomInfo);
-    let playerId = generateCode(6);
+    let room = new Room(roomInfo.val());
     // @ts-ignore
     firebase.database().ref("/rooms/" + roomCode + '/players/' + player.code).set(player.getData());
     return {

@@ -5,5 +5,4 @@ import { createRoom, joinRoom} from "./util/database.js";
 // console.log(firebase)
 let room = createRoom('bob').room;
 
-joinRoom('sarah', room.roomCode);
-
+let output = await joinRoom('sarah', room.roomCode);
