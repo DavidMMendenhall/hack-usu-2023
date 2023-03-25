@@ -53,6 +53,7 @@ function Region(name, requirements, parent, cell) {
         newAncestor.children.push(this);
         parent = newAncestor;
     }
+
     if (parent) {
         this.setParent(parent);
     }
@@ -92,11 +93,12 @@ let convertToRegionGraph = (worldCells, start, boss, player) => {
  * @param {{}} visited 
  */
 let traverseCells = (parent, worldCells, row, col, boss, player, visited) => {
-    if (row < worldCells.length && row > 0 && col < worldCells[row].length && col > 0) {
+    if (row < worldCells.length && row >= 0 && col < worldCells[row].length && col >= 0) {    
         let cell = worldCells[row][col];
         if (visited[cell.name]) {
-            return;
+            return null;
         }
+
         let newRegion = new Region(cell.name, [], parent, { row: row, col: col });
         newRegion.locations.chests = worldCells[row][col].chests;
         visited[cell.name] = true;
