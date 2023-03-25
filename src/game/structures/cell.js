@@ -17,24 +17,28 @@ class Cell {
 			let line = [];
 			this.tiles.push(line);
 			for (let x = 0; x < this.tilesX; x++) {
-				let wall = x == 0 || y == 0 || x == this.tilesX - 1 || y == this.tilesY - 1;
-				let border = (
+				this.wall = x == 0 || y == 0 || x == this.tilesX - 1 || y == this.tilesY - 1;
+				this.border = (
 					wc.walls.left == -1  && x == 0 ||
 					wc.walls.up == -1    && y == 0 ||
 					wc.walls.right == -1 && x == this.tilesX - 1 ||
 					wc.walls.down == -1  && y == this.tilesY - 1
 				);
 
-				let direction = "n";
+				this.door = true; 
+				if (wc.walls.left  == 0 && x == 0 && y == ((this.tilesY / 2) | 0)) {
+					this.direction = "w";
+				} else if (wc.walls.up    == 0 && y == 0 && x == ((this.tilesX / 2) | 0)) {
+					this.direction = "n";
+				} else if (wc.walls.right == 0 && x == this.tilesX - 1 && y == ((this.tilesY / 2) | 0)) {
+					this.direction = "e";
+				} else if (wc.walls.down  == 0 && y == this.tilesY - 1 && x == ((this.tilesX / 2) | 0)) {
+					this.direction = "s";
+				} else {
+					this.door = false;
+				}
 
-				let door = (
-					wc.walls.left  == 0 && x == 0 && y == ((this.tilesY / 2) | 0) && (direction = "w") ||
-					wc.walls.up    == 0 && y == 0 && x == ((this.tilesX / 2) | 0) ||
-					wc.walls.right == 0 && x == this.tilesX - 1 && y == ((this.tilesY / 2) | 0) && (direction = "e") ||
-					wc.walls.down  == 0 && y == this.tilesY - 1 && x == ((this.tilesX / 2) | 0) && (direction = "s")
-				);
-
-				let tile = door ? new DoorTile(direction) : border ? new BorderTile() : wall ? new WallTile() : new Tile();
+				let tile = this.door ? new DoorTile(this.direction) : this.border ? new BorderTile() : this.wall ? new WallTile() : new Tile();
 				line.push(tile);
 			}
 		}

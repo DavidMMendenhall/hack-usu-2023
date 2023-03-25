@@ -83,37 +83,35 @@ function GameState() {
 				h: this.player.bb.h,
 			});
 
-			console.log("next frame");
+			let doorDetectorBox = new BoundingBox({
+				x: nextX,
+				y: nextY,
+				w: this.player.bb.w,
+				h: this.player.bb.h,
+			});
+
 			for (const bb of this.staticBodies) {
 				if (nextBoundingBox.collidesWith(bb)) {
 					console.log(nextBoundingBox.cx, bb.cx, nextBoundingBox.cy, bb.cy);
 					if (nextBoundingBox.cx < bb.cx && this.player.forces.x > 0) {
-						console.log("left");
-						//nextX = bb.x1 - nextBoundingBox.w;
 						nextX = prevX;
 						nextY = prevY;
 						nextBoundingBox.x1 = nextX;
 					}
 
 					if (nextBoundingBox.cx > bb.cx && this.player.forces.x < 0) {
-						console.log("right");
-						//nextX = bb.x2;
 						nextX = prevX;
 						nextY = prevY;
 						nextBoundingBox.x1 = nextX;
 					}
 
 					if (nextBoundingBox.cy < bb.cy && this.player.forces.y > 0) {
-						console.log("up");
-						//nextY = bb.y1 - nextBoundingBox.h;
 						nextX = prevX;
 						nextY = prevY;
 						nextBoundingBox.y1 = nextY;
 					}
 
 					if (nextBoundingBox.cy > bb.cy && this.player.forces.y < 0) {
-						console.log("down");
-						//nextY = bb.y2;
 						nextX = prevX;
 						nextY = prevY;
 						nextBoundingBox.y1 = nextY;
@@ -172,6 +170,7 @@ function GameState() {
 		updateCell() {
 			let cell =  new Cell(this.maze[this.cy][this.cx]);
 			this.staticBodies = [];
+			this.doorsBoxes = [];
 			cell.tiles.forEach((line, yi) => {
 				line.forEach((tile, xi) => {
 					if (tile.collides) {
