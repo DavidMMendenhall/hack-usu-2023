@@ -72,6 +72,23 @@ function GameState(room) {
 				},
 			});
 
+			this.registerKey(' ', {
+				"down": () => {
+					for (const c of this.chests) {
+						let pbb = this.player.bb;
+						let cbb = c.bb;
+
+						let dist = Math.sqrt((pbb.cx - cbb.cx)**2 + (pbb.cy - cbb.cy)**2);
+
+						if (dist < 2) {
+							let retrievedItem = c.tile.content;
+							c.tile.content = 0;
+
+							this.room.collectItem(retrievedItem);
+						}
+					}
+				}
+			});
 			let id = room.subcribeToGameUpdates(game => {
 				console.log('game has updated');
 				room.unsubscribeListener(id);
