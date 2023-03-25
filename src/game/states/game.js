@@ -6,6 +6,7 @@ import {BoundingBox} from "../../engine/collision.js";
 import {Texture} from "../../engine/render.js";
 import {ChestTile, DoorTile} from "../structures/tile.js";
 import {ScrollingState} from "./scrolling.js";
+import {getItemColor} from "../generator/keycolor.js";
 
 const MOVEMENT_SPEED = 3;
 
@@ -84,6 +85,9 @@ function GameState(room) {
 							let retrievedItem = c.tile.content;
 							c.tile.content = 0;
 
+							if (!retrievedItem) {
+								continue;
+							}
 							this.room.collectItem(retrievedItem);
 						}
 					}
@@ -235,6 +239,35 @@ function GameState(room) {
 			);
 
 			tx.ctx.restore();
+
+			tx.ctx.fillStyle = "#fff";
+			tx.ctx.textAlign = "left";
+			tx.ctx.font = "25px Arial";
+
+			tx.ctx.fillText(`${Object.keys(this.world.items).length} items in this world`, 10, 35);
+
+			Object.keys(this.world.items).forEach((k, idx) => {
+				let item = this.world.items[k];
+				let color = getItemColor(k);
+
+				if (item.collected) {
+					tx.ctx.fillStyle = color;
+					tx.ctx.fillRect(
+						30 + 30 * idx,
+						45,
+						25,
+						25,
+					);
+				} else {
+					tx.ctx.strokeStyle = `${color}`;
+					tx.ctx.strokeRect(
+						30 + 30 * idx,
+						45,
+						25,
+						25
+					);
+				}
+			});
 		},
 
 		updateCell() {
